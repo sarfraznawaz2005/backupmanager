@@ -88,10 +88,10 @@ Although packages provides GUI interface to manage backups, following commands a
 
 Please see the [license file](license.md) for more information.
 
-[ico-version]: https://img.shields.io/packagist/v/sarfraznawaz2005/noty.svg?style=flat-square
-[ico-downloads]: https://img.shields.io/packagist/dt/sarfraznawaz2005/noty.svg?style=flat-square
+[ico-version]: https://img.shields.io/packagist/v/sarfraznawaz2005/backupmanager.svg?style=flat-square
+[ico-downloads]: https://img.shields.io/packagist/dt/sarfraznawaz2005/backupmanager.svg?style=flat-square
 
-[link-packagist]: https://packagist.org/packages/sarfraznawaz2005/noty
-[link-downloads]: https://packagist.org/packages/sarfraznawaz2005/noty
+[link-packagist]: https://packagist.org/packages/sarfraznawaz2005/backupmanager
+[link-downloads]: https://packagist.org/packages/sarfraznawaz2005/backupmanager
 [link-author]: https://github.com/sarfraznawaz2005
-[link-contributors]: https://github.com/sarfraznawaz2005/noty/graphs/contributors
+[link-contributors]: https://github.com/sarfraznawaz2005/backupmanager/graphs/contributors
