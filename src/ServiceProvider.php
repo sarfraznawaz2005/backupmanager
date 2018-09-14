@@ -3,6 +3,9 @@
 namespace Sarfraznawaz2005\BackupManager;
 
 use Illuminate\Support\ServiceProvider as BaseServiceProvider;
+use Sarfraznawaz2005\BackupManager\Console\BackupCommand;
+use Sarfraznawaz2005\BackupManager\Console\BackupListCommand;
+use Sarfraznawaz2005\BackupManager\Console\BackupRestoreCommand;
 
 class ServiceProvider extends BaseServiceProvider
 {
@@ -38,6 +41,15 @@ class ServiceProvider extends BaseServiceProvider
     public function register()
     {
         $this->mergeConfigFrom(__DIR__ . '/Config/config.php', 'BackupManager');
+
+        $this->app->bind('command.backupmanager.create', BackupCommand::class);
+        $this->commands('command.backupmanager.create');
+
+        $this->app->bind('command.backupmanager.list', BackupListCommand::class);
+        $this->commands('command.backupmanager.list');
+
+        $this->app->bind('command.backupmanager.restore', BackupRestoreCommand::class);
+        $this->commands('command.backupmanager.restore');
 
         $this->app->singleton('BackupManager', function () {
             return $this->app->make(BackupManager::class);

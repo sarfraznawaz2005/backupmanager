@@ -57,12 +57,7 @@ See `config/backupmanager.php` file for more information about backup settings.
 
 ## Setting Up Automatic Backups
 
-To setup automatic backups, place following in `app/Console/Kernel.php` file's `$commands` array:
-
-```php
-\Sarfraznawaz2005\BackupManager\Console\BackupCommand::class,
-```
-and then
+To setup automatic backups, place following in `app/Console/Kernel.php` file:
 
 ```php
 $schedule->command('backupmanager:create')->daily();
@@ -78,6 +73,7 @@ Although packages provides GUI interface to manage backups, following commands a
 
 
 
+
 ## Credits
 
 - [Sarfraz Ahmed][link-author]
@@ -87,10 +83,10 @@ Although packages provides GUI interface to manage backups, following commands a
 
 Please see the [license file](license.md) for more information.
 
-[ico-version]: https://img.shields.io/packagist/v/sarfraznawaz2005/backupmanager.svg?style=flat-square
-[ico-downloads]: https://img.shields.io/packagist/dt/sarfraznawaz2005/backupmanager.svg?style=flat-square
+[ico-version]: https://img.shields.io/packagist/v/sarfraznawaz2005/noty.svg?style=flat-square
+[ico-downloads]: https://img.shields.io/packagist/dt/sarfraznawaz2005/noty.svg?style=flat-square
 
-[link-packagist]: https://packagist.org/packages/sarfraznawaz2005/backupmanager
-[link-downloads]: https://packagist.org/packages/sarfraznawaz2005/backupmanager
+[link-packagist]: https://packagist.org/packages/sarfraznawaz2005/noty
+[link-downloads]: https://packagist.org/packages/sarfraznawaz2005/noty
 [link-author]: https://github.com/sarfraznawaz2005
-[link-contributors]: https://github.com/sarfraznawaz2005/backupmanager/graphs/contributors
+[link-contributors]: https://github.com/sarfraznawaz2005/noty/graphs/contributors

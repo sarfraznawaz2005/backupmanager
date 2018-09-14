@@ -18,7 +18,7 @@ class BackupManagerController extends BaseController
 
     public function index()
     {
-        $title = '<i class="fa fa-list"></i> Backup List';
+        $title = 'Backup List';
 
         $backups = BackupManager::getBackups();
 
@@ -155,7 +155,7 @@ class BackupManagerController extends BaseController
             if ($results) {
                 $messages[] = [
                     'type' => 'success',
-                    'message' => 'Database backup(s) deleted successfully.'
+                    'message' => 'Backup(s) deleted successfully.'
                 ];
             } else {
                 $messages[] = [

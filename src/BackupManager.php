@@ -243,17 +243,21 @@ class BackupManager
 
             if (file_exists(base_path($file))) {
 
-                $file = base_path($file);
-
                 file_put_contents(base_path($this->fileVerifyName), 'restore');
 
-                $command = "cd .. && $this->tar -xzf $file";
+                $cd = 'cd .. &&';
+
+                if (App::runningInConsole()) {
+                    $cd = '';
+                }
+
+                $command = "$cd $this->tar -xzf $file";
                 //exit($command);
 
                 shell_exec($command . ' 2>&1');
 
                 // delete local file
-                $storageLocal->delete(basename($file));
+                $storageLocal->delete($file);
             }
 
         }
@@ -269,6 +273,7 @@ class BackupManager
             $storageLocal->put($file, $contents);
 
             if (file_exists(base_path($file))) {
+
                 DB::statement(" INSERT INTO verifybackup (id, verify_status) VALUES (1, 'restore') ON DUPLICATE KEY UPDATE verify_status = 'restore' ");
 
                 $connection = [
@@ -286,14 +291,20 @@ class BackupManager
 
                 $connectionOptions .= " -h {$connection['host']} {$connection['database']} ";
 
-                //$command = "gunzip < $this->fBackupName | mysql $connectionOptions";
-                $command = "$this->zcat $file | mysql $connectionOptions";
+                $cd = 'cd .. &&';
+
+                if (App::runningInConsole()) {
+                    $cd = '';
+                }
+
+                //$command = "$cd gunzip < $this->fBackupName | mysql $connectionOptions";
+                $command = "$cd $this->zcat $file | mysql $connectionOptions";
                 //exit($command);
 
                 shell_exec($command . ' 2>&1');
 
                 // delete local file
-                $storageLocal->delete(basename($file));
+                $storageLocal->delete($file);
             }
 
         }
