@@ -72,8 +72,6 @@ Although packages provides GUI interface to manage backups, following commands a
 ```
 
 
-
-
 ## Credits
 
 - [Sarfraz Ahmed][link-author]
