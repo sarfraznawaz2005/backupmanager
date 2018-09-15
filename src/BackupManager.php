@@ -54,7 +54,9 @@ class BackupManager
         }
 
         // sort by date
-        usort($filesData, [$this, 'sortFunction']);
+        usort($filesData, function ($a, $b) {
+            return strtotime($a['date']) - strtotime($b['date']);
+        });
 
         $filesData = collect($filesData)->sortByDesc('date')->toArray();
 
@@ -151,7 +153,7 @@ class BackupManager
 
             $itemsToBackup = implode(' ', $itemsToBackup);
 
-            $command = 'cd ' . base_path() . " && $this->tar -cpzf $this->fBackupName $itemsToBackup";
+            $command = 'cd ' . str_replace('\\', '/', base_path()) . " && $this->tar -cpzf $this->fBackupName $itemsToBackup";
             //exit($command);
 
             shell_exec($command . ' 2>&1');
@@ -215,7 +217,7 @@ class BackupManager
                 $tableOptions = implode(' ', $itemsToBackup);
             }
 
-            $command = 'cd ' . base_path() . " && $this->mysqldump $options $connectionOptions $tableOptions | gzip > $this->dBackupName";
+            $command = 'cd ' . str_replace('\\', '/', base_path()) . " && $this->mysqldump $options $connectionOptions $tableOptions | gzip > $this->dBackupName";
             //exit($command);
 
             shell_exec($command . ' 2>&1');
@@ -245,13 +247,7 @@ class BackupManager
 
                 file_put_contents(base_path($this->fileVerifyName), 'restore');
 
-                $cd = 'cd .. &&';
-
-                if (App::runningInConsole()) {
-                    $cd = '';
-                }
-
-                $command = "$cd $this->tar -xzf $file";
+                $command = 'cd ' . str_replace('\\', '/', base_path()) . " && $this->tar -xzf $file";
                 //exit($command);
 
                 shell_exec($command . ' 2>&1');
@@ -291,14 +287,8 @@ class BackupManager
 
                 $connectionOptions .= " -h {$connection['host']} {$connection['database']} ";
 
-                $cd = 'cd .. &&';
-
-                if (App::runningInConsole()) {
-                    $cd = '';
-                }
-
                 //$command = "$cd gunzip < $this->fBackupName | mysql $connectionOptions";
-                $command = "$cd $this->zcat $file | mysql $connectionOptions";
+                $command = 'cd ' . str_replace('\\', '/', base_path()) . " && $this->zcat $file | mysql $connectionOptions";
                 //exit($command);
 
                 shell_exec($command . ' 2>&1');
@@ -317,6 +307,8 @@ class BackupManager
      */
     protected function getBackupStatus()
     {
+        @unlink(base_path($this->fileVerifyName));
+
         $fStatus = false;
         $dStatus = false;
 
@@ -338,6 +330,8 @@ class BackupManager
         // for files
         if ($isFiles) {
             $contents = file_get_contents(base_path($this->fileVerifyName));
+
+            @unlink(base_path($this->fileVerifyName));
 
             return ['f' => $contents === 'backup'];
         }
@@ -377,11 +371,6 @@ class BackupManager
                 Log::info('Deleted old backup file: ' . $file['basename']);
             }
         }
-    }
-
-    protected function sortFunction($a, $b)
-    {
-        return strtotime($a['date']) - strtotime($b['date']);
     }
 
     protected function formatSizeUnits($size)
