@@ -282,7 +282,7 @@ class BackupManager
                 $connectionOptions = "-u {$connection['username']} ";
 
                 if (trim($connection['password'])) {
-                    $connectionOptions .= " -p {$connection['password']} ";
+                    $connectionOptions .= " -p\"{$connection['password']}\" ";
                 }
 
                 $connectionOptions .= " -h {$connection['host']} {$connection['database']} ";

@@ -37,12 +37,7 @@
                         <span class="col-sm-8 badge badge-{{$backup['type'] === 'Files' ? 'primary' : 'success'}}">{{$backup['type']}}</span>
                     </td>
                     <td style="text-align: center;">
-                        &nbsp;&nbsp;
-                        <label class="control checkbox">
-                            <input type="checkbox" name="backups[]" class="chkBackup" value="{{$backup['name']}}">
-                            <span class="control-indicator"></span>
-                            &nbsp;
-                        </label>
+						<input type="checkbox" name="backups[]" class="chkBackup" value="{{$backup['name']}}">
                     </td>
                 </tr>
             @endforeach

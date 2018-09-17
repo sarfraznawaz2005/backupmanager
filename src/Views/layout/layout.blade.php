@@ -18,8 +18,6 @@
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.16/css/dataTables.bootstrap4.min.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.2.1/css/responsive.bootstrap4.min.css">
 
-    <link rel="stylesheet" href="http://wtfforms.com/wtf-forms.css">
-
     <style>
         body {
             padding-top: 5rem;
