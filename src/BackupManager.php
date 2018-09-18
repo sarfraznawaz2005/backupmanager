@@ -49,7 +49,7 @@ class BackupManager
                 'name' => $file['basename'],
                 'size' => $this->formatSizeUnits($file['size']),
                 'type' => $file['basename'][0] === 'd' ? 'Database' : 'Files',
-                'date' => date('M d Y', $file['timestamp'])
+                'date' => date('M d Y', $this->getFileTimeStamp($file))
             ];
         }
 
@@ -153,7 +153,8 @@ class BackupManager
 
             $itemsToBackup = implode(' ', $itemsToBackup);
 
-            $command = 'cd ' . str_replace('\\', '/', base_path()) . " && $this->tar -cpzf $this->fBackupName $itemsToBackup";
+            $command = 'cd ' . str_replace('\\', '/',
+                    base_path()) . " && $this->tar -cpzf $this->fBackupName $itemsToBackup";
             //exit($command);
 
             shell_exec($command . ' 2>&1');
@@ -217,7 +218,8 @@ class BackupManager
                 $tableOptions = implode(' ', $itemsToBackup);
             }
 
-            $command = 'cd ' . str_replace('\\', '/', base_path()) . " && $this->mysqldump $options $connectionOptions $tableOptions | gzip > $this->dBackupName";
+            $command = 'cd ' . str_replace('\\', '/',
+                    base_path()) . " && $this->mysqldump $options $connectionOptions $tableOptions | gzip > $this->dBackupName";
             //exit($command);
 
             shell_exec($command . ' 2>&1');
@@ -288,7 +290,8 @@ class BackupManager
                 $connectionOptions .= " -h {$connection['host']} {$connection['database']} ";
 
                 //$command = "$cd gunzip < $this->fBackupName | mysql $connectionOptions";
-                $command = 'cd ' . str_replace('\\', '/', base_path()) . " && $this->zcat $file | mysql $connectionOptions";
+                $command = 'cd ' . str_replace('\\', '/',
+                        base_path()) . " && $this->zcat $file | mysql $connectionOptions";
                 //exit($command);
 
                 shell_exec($command . ' 2>&1');
@@ -365,12 +368,24 @@ class BackupManager
                 continue;
             }
 
-            if ($file['timestamp'] < $limit) {
+            if ($this->getFileTimeStamp($file) < $limit) {
                 Storage::disk($this->disk)->delete($file['basename']);
 
                 Log::info('Deleted old backup file: ' . $file['basename']);
             }
         }
+    }
+
+    protected function getFileTimeStamp(array $file)
+    {
+        if (isset($file['timestamp'])) {
+            return $file['timestamp'];
+        }
+
+        // otherwise get date from file name
+        $array = explode('_', $file['filename']);
+
+        return strtotime(end($array));
     }
 
     protected function formatSizeUnits($size)
