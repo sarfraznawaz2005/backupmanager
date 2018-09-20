@@ -54,7 +54,7 @@ return [
         ],
 
         // define disk options
-        'disk' => 'local',
+        'disk' => 'local', // any disk from config/filesystems.php like local, ftp, s3, etc
         'backup_path' => 'backups',
 
         // backup files name suffix
