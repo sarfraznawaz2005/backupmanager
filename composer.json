@@ -32,7 +32,7 @@
         "Sarfraznawaz2005\\BackupManager\\ServiceProvider"
       ],
       "aliases": {
-        "Noty": "Sarfraznawaz2005\\BackupManager\\Facades\\BackupManager"
+        "BackupManager": "Sarfraznawaz2005\\BackupManager\\Facades\\BackupManager"
       }
     }
   },
