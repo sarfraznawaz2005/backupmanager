@@ -17,6 +17,8 @@ Simple laravel package to backup/restore files and database.
  - `mysqldump` (to backup database)
  - `tar` (to backup/restore files)
  - `zcat` (to extract database archive)
+ 
+ Please make sure above binaries are added to `PATH` environment variable or you can specify full path to them in config file.
 
 ## Installation
 
