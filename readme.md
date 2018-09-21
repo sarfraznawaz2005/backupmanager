@@ -71,6 +71,24 @@ Although packages provides GUI interface to manage backups, following commands a
   backupmanager:restore                 Restores a backup already taken.
 ```
 
+## Saving Backups to Other Disks
+
+By default this package saves backups to `local` disk but you can use built-in feature of laravel filesystem to save backups to other disks too. Let's say you want to upload to different server for which you have ftp credentials, you need to update those ftp credentials into laravel's `config/filesystems.php` file under `ftp` disk setting. Once you have done that, in backup manager config file (`config/backupmanager.php`) specify your disk to be `ftp` instead of `local` eg:
+
+    // define disk options
+    'disk' => 'ftp',
+
+instead of 
+
+     'disk' => 'local',
+
+Now backup files will be saved on your ftp location instead of locally.
+
+
+
+## Disclaimer
+
+This package was created for our needs and works for us however no guarantee is provided in terms of its functionality especially restore feature which can not be 100% verified because of the way restore feature works. So use this package at your own risk.
 
 ## Credits
 
