@@ -86,7 +86,9 @@ instead of
 
 Now backup files will be saved on your ftp location instead of locally.
 
+## How Restore is verified
 
+Even though there is no 100% way to verify restores, yet for **files** we create and verify restore feature by putting some contents into `backup-verify` file before and after restore. Similarly, we verify **database** restore by putting some contents into `verifybackup` table before and after restore. In both cases, contents of that file and database table are differnt at the time of backup and restore.
 
 ## Disclaimer
 
