@@ -369,9 +369,11 @@ class BackupManager
             }
 
             if ($this->getFileTimeStamp($file) < $limit) {
-                Storage::disk($this->disk)->delete($file['basename']);
-
-                Log::info('Deleted old backup file: ' . $file['basename']);
+                if (Storage::disk($this->disk)->exists($file['basename'])) {
+                    Storage::disk($this->disk)->delete($file['basename']);
+                    
+                    Log::info('Deleted old backup file: ' . $file['basename']);
+                }                
             }
         }
     }
