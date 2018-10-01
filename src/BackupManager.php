@@ -54,11 +54,9 @@ class BackupManager
         }
 
         // sort by date
-        usort($filesData, function ($a, $b) {
-            return strtotime($a['date']) - strtotime($b['date']);
-        });
-
-        $filesData = collect($filesData)->sortByDesc('date')->toArray();
+        $filesData = collect($filesData)->sortByDesc(function ($temp, $key) {
+            return Carbon::parse($temp['date'])->getTimestamp();
+        })->all();
 
         return array_values($filesData);
     }
