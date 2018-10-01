@@ -3,7 +3,7 @@
 Route::group(
     [
         'namespace' => 'Sarfraznawaz2005\BackupManager\Http\Controllers',
-        'prefix' => config('BackupManager.route', 'backupmanager')
+        'prefix' => config('backupmanager.route', 'backupmanager')
     ],
     function () {
         // list backups
