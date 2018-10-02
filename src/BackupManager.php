@@ -357,8 +357,7 @@ class BackupManager
     protected function deleteOldBackups()
     {
         $daysOldToDelete = (int)config('backupmanager.backups.delete_old_backup_days');
-        $maxAge = 3600 * 24 * $daysOldToDelete;
-        $limit = time() - $maxAge;
+        $now = time();
 
         $files = Storage::disk($this->disk)->listContents($this->backupPath);
 
@@ -367,12 +366,12 @@ class BackupManager
                 continue;
             }
 
-            if ($this->getFileTimeStamp($file) < $limit) {
-                if (Storage::disk($this->disk)->exists($file['basename'])) {
-                    Storage::disk($this->disk)->delete($file['basename']);
-                    
+            if ($now - $this->getFileTimeStamp($file) >= 60 * 60 * 24 * $daysOldToDelete) {
+                if (Storage::disk($this->disk)->exists($this->backupPath . $file['basename'])) {
+                    Storage::disk($this->disk)->delete($this->backupPath . $file['basename']);
+
                     Log::info('Deleted old backup file: ' . $file['basename']);
-                }                
+                }
             }
         }
     }
