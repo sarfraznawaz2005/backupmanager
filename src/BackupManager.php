@@ -48,6 +48,7 @@ class BackupManager
         foreach ($files as $index => $file) {
             $filesData[] = [
                 'name' => $file['basename'],
+                'size_raw' => $file['size'],
                 'size' => $this->formatSizeUnits($file['size']),
                 'type' => $file['basename'][0] === 'd' ? 'Database' : 'Files',
                 'date' => date('M d Y', $this->getFileTimeStamp($file))

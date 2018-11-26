@@ -21,7 +21,9 @@
                 <th>Name</th>
                 <th>Date</th>
                 <th>Size</th>
+                <th style="text-align: center;">Health</th>
                 <th style="text-align: center;">Type</th>
+                <th style="text-align: center;">Download</th>
                 <th style="text-align: center;" width="1">Action</th>
             </tr>
             </thead>
@@ -31,13 +33,28 @@
                 <tr>
                     <td style="text-align: center;">{{++$index}}</td>
                     <td>{{$backup['name']}}</td>
-                    <td>{{$backup['date']}}</td>
+                    <td class="date">{{$backup['date']}}</td>
                     <td>{{$backup['size']}}</td>
+                    <td style="text-align: center;">
+                        <?php
+                        $okSizeBytes = 1024;
+                        $isOk = $backup['size_raw'] >= $okSizeBytes;
+                        $text = $isOk ? 'Good' : 'Bad';
+                        $icon = $isOk ? 'success' : 'danger';
+
+                        echo "<span class='col-sm-8 badge badge-$icon'>$text</span>";
+                        ?>
+                    </td>
                     <td style="text-align: center;">
                         <span class="col-sm-8 badge badge-{{$backup['type'] === 'Files' ? 'primary' : 'success'}}">{{$backup['type']}}</span>
                     </td>
                     <td style="text-align: center;">
-						<input type="checkbox" name="backups[]" class="chkBackup" value="{{$backup['name']}}">
+                        <a href="{{ route('backupmanager_download', [$backup['name']])  }}">
+                            <i class="fa fa-download btn btn-primary"></i>
+                        </a>
+                    </td>
+                    <td style="text-align: center;">
+                        <input type="checkbox" name="backups[]" class="chkBackup" value="{{$backup['name']}}">
                     </td>
                 </tr>
             @endforeach
@@ -153,6 +170,14 @@
                 transform: rotate(359deg);
             }
         }
+
+        table.dataTable tr.group td {
+            background-image: radial-gradient(#fff, #eee);
+            border: none;
+            text-align: center;
+            font-weight: bold;
+            font-size: 16px;
+        }
     </style>
 @endpush
 
@@ -169,7 +194,10 @@
                     bSortable: false,
                     aTargets: [-1]
                 }
-            ]
+            ],
+            rowGroup: {
+                dataSrc: 2
+            }
         });
 
         var $btnSubmit = $('#btnSubmit');

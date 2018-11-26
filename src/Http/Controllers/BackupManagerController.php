@@ -6,6 +6,7 @@ use Illuminate\Routing\Controller as BaseController;
 use Log;
 use Sarfraznawaz2005\BackupManager\Facades\BackupManager;
 use Session;
+use Storage;
 
 class BackupManagerController extends BaseController
 {
@@ -78,6 +79,7 @@ class BackupManagerController extends BaseController
         }
 
         Session::flash('messages', $messages);
+
         return redirect()->back();
     }
 
@@ -166,6 +168,19 @@ class BackupManagerController extends BaseController
         }
 
         Session::flash('messages', $messages);
+
         return redirect()->back();
+    }
+
+    public function download($file)
+    {
+        $path = config('backupmanager.backups.backup_path') . DIRECTORY_SEPARATOR . $file;
+
+        $file = Storage::disk(config('backupmanager.backups.disk'))
+                ->getDriver()
+                ->getAdapter()
+                ->getPathPrefix() . $path;
+
+        return response()->download($file);
     }
 }

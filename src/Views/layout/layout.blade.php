@@ -20,12 +20,13 @@
 
     <style>
         body {
-            padding-top: 5rem;
+            padding-top: 4rem;
             font-size: 0.8rem;
             font-family: sans-serif;
             line-height: 1.0;
-            background: #dddddd;
             margin-bottom: 50px;
+            background-color: #cccccc;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8' viewBox='0 0 8 8'%3E%3Cg fill='%23dddddd' fill-opacity='0.4'%3E%3Cpath fill-rule='evenodd' d='M0 0h4v4H0V0zm4 4h4v4H4V4z'/%3E%3C/g%3E%3C/svg%3E");
         }
 
         .table td, .table th {
@@ -97,6 +98,16 @@
             right: 10px;
             left: auto;
         }
+
+        .stripe {
+            color: white;
+            background: repeating-linear-gradient(45deg, #007BFF, #007BFF 20%, #3898ff 10px, #3898ff);
+            background-size: 100% 20px;
+        }
+
+        nav {
+            background-image: radial-gradient(#37ba37, #34a334);
+        }
     </style>
 
     @stack('styles')
@@ -126,7 +137,7 @@
 <main role="main" class="container">
 
     <div class="card shadow">
-        <div class="card-header bg-primary text-white">
+        <div class="card-header bg-primary text-white stripe">
             <strong>@yield('title')</strong>
 
             <div class="float-right">
@@ -172,6 +183,7 @@
 <script src="https://cdn.datatables.net/1.10.16/js/dataTables.bootstrap4.min.js"></script>
 <script src="https://cdn.datatables.net/responsive/2.2.1/js/dataTables.responsive.min.js"></script>
 <script src="https://cdn.datatables.net/responsive/2.2.1/js/responsive.bootstrap4.min.js"></script>
+<script src="https://cdn.datatables.net/rowgroup/1.0.4/js/dataTables.rowGroup.min.js"></script>
 <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 
 <script>
