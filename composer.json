@@ -19,7 +19,7 @@
     "Server"
   ],
   "require": {
-    "illuminate/support": "~5"
+    "illuminate/support": "~5|~6"
   },
   "autoload": {
     "psr-4": {
