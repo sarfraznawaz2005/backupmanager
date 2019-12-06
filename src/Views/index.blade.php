@@ -5,6 +5,7 @@
 @section('header')
     <form action="{{route('backupmanager_create')}}" method="post" id="frmNew">
         {{ csrf_field() }}
+        <input type="text" name="backupName">
         <button type="submit" class="btn btn-warning btn-sm"><i class="fa fa-plus"></i> Create New Backup</button>
     </form>
 @endsection
@@ -20,6 +21,7 @@
                 <th style="text-align: center;" width="1">#</th>
                 <th>Name</th>
                 <th>Date</th>
+                <th>Time</th>
                 <th>Size</th>
                 <th style="text-align: center;">Health</th>
                 <th style="text-align: center;">Type</th>
@@ -34,6 +36,7 @@
                     <td style="text-align: center;">{{++$index}}</td>
                     <td>{{$backup['name']}}</td>
                     <td class="date">{{$backup['date']}}</td>
+                    <td>{{$backup['time']}}</td>
                     <td>{{$backup['size']}}</td>
                     <td style="text-align: center;">
                         <?php

@@ -58,7 +58,7 @@ return [
         'backup_path' => 'backups',
 
         // backup files name suffix
-        'backup_file_date_suffix' => date('M-d-Y'),
+        'backup_file_date_suffix' => date('M-d-Y-h:m:s'),
 
         // define number of days old backup files will be deleted before new backup
         'delete_old_backup_days' => 10
