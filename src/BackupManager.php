@@ -188,13 +188,14 @@ class BackupManager
 
             $connection = [
                 'host' => config('database.connections.mysql.host'),
+                'port' => config('database.connections.mysql.port'),
                 'database' => config('database.connections.mysql.database'),
                 'username' => config('database.connections.mysql.username'),
                 'password' => config('database.connections.mysql.password'),
             ];
 
             $tableOptions = '';
-            $connectionOptions = "--user={$connection['username']} --password=\"{$connection['password']}\" --host={$connection['host']} {$connection['database']} ";
+            $connectionOptions = "--user={$connection['username']} --password=\"{$connection['password']}\" --host={$connection['host']} --port={$connection['port']} {$connection['database']} ";
 
             // https://mariadb.com/kb/en/library/mysqldump/
             $options = [
@@ -276,6 +277,7 @@ class BackupManager
 
                 $connection = [
                     'host' => config('database.connections.mysql.host'),
+                    'port' => config('database.connections.mysql.port'),
                     'database' => config('database.connections.mysql.database'),
                     'username' => config('database.connections.mysql.username'),
                     'password' => config('database.connections.mysql.password'),
@@ -287,7 +289,7 @@ class BackupManager
                     $connectionOptions .= " -p\"{$connection['password']}\" ";
                 }
 
-                $connectionOptions .= " -h {$connection['host']} {$connection['database']} ";
+                $connectionOptions .= " -h {$connection['host']} --port={$connection['port']} {$connection['database']} ";
 
                 //$command = "$cd gunzip < $this->fBackupName | mysql $connectionOptions";
                 $command = 'cd ' . str_replace('\\', '/',
