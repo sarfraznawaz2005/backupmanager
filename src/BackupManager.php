@@ -51,7 +51,7 @@ class BackupManager
                 'size' => $this->formatSizeUnits($file['size']),
                 'type' => $file['basename'][0] === 'd' ? 'Database' : 'Files',
                 'date' => date('M d Y', $this->getFileTimeStamp($file)),
-                'time' => date('H:m:s', $this->getFileTimeStamp($file))
+                'time' => date('h:i:sa', $this->getFileTimeStamp($file))
             ];
         }
 
