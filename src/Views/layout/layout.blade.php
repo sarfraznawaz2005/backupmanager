@@ -154,7 +154,11 @@
                     </p>
                 @endforeach
             @endif
-
+            @error('backupName')
+            <span class="alert alert-danger">
+                {{ $message }}
+            </span>
+            @enderror
             @yield('content')
         </div>
 

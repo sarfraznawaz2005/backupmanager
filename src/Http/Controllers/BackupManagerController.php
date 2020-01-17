@@ -2,11 +2,13 @@
 
 namespace Sarfraznawaz2005\BackupManager\Http\Controllers;
 
-use Illuminate\Routing\Controller as BaseController;
 use Log;
-use Sarfraznawaz2005\BackupManager\Facades\BackupManager;
 use Session;
 use Storage;
+use Illuminate\Routing\Controller as BaseController;
+use Sarfraznawaz2005\BackupManager\Facades\BackupManager;
+use Sarfraznawaz2005\BackupManager\Http\Requests\CreateBackupRequest;
+
 
 class BackupManagerController extends BaseController
 {
@@ -26,9 +28,13 @@ class BackupManagerController extends BaseController
         return view('backupmanager::index', compact('title', 'backups'));
     }
 
-    public function createBackup()
+    public function createBackup(CreateBackupRequest $request)
     {
         $messages = [];
+
+        // Set name
+        if ($request->backupName != '')
+            BackupManager::setBackupName($request->backupName);
 
         // create backups
         $result = BackupManager::createBackup();
@@ -183,4 +189,5 @@ class BackupManagerController extends BaseController
 
         return response()->download($file);
     }
+
 }

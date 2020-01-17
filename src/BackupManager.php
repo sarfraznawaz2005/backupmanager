@@ -16,7 +16,6 @@ class BackupManager
     protected $fBackupName;
     protected $dBackupName;
     protected $fileVerifyName = 'backup-verify';
-
     /**
      * BackupManager constructor.
      */
@@ -24,7 +23,7 @@ class BackupManager
     {
         $this->disk = config('backupmanager.backups.disk');
         $this->backupPath = config('backupmanager.backups.backup_path') . DIRECTORY_SEPARATOR;
-        $this->backupSuffix = strtolower(config('backupmanager.backups.backup_file_date_suffix'));
+        $this->backupSuffix = strtolower(date('M-d-Y-h:i:sa'));
         $this->fBackupName = "f_$this->backupSuffix.tar";
         $this->dBackupName = "d_$this->backupSuffix.gz";
 
@@ -51,7 +50,8 @@ class BackupManager
                 'size_raw' => $file['size'],
                 'size' => $this->formatSizeUnits($file['size']),
                 'type' => $file['basename'][0] === 'd' ? 'Database' : 'Files',
-                'date' => date('M d Y', $this->getFileTimeStamp($file))
+                'date' => date('M d Y', $this->getFileTimeStamp($file)),
+                'time' => date('h:i:sa', $this->getFileTimeStamp($file))
             ];
         }
 
@@ -188,13 +188,14 @@ class BackupManager
 
             $connection = [
                 'host' => config('database.connections.mysql.host'),
+                'port' => config('database.connections.mysql.port'),
                 'database' => config('database.connections.mysql.database'),
                 'username' => config('database.connections.mysql.username'),
                 'password' => config('database.connections.mysql.password'),
             ];
 
             $tableOptions = '';
-            $connectionOptions = "--user={$connection['username']} --password=\"{$connection['password']}\" --host={$connection['host']} {$connection['database']} ";
+            $connectionOptions = "--user={$connection['username']} --password=\"{$connection['password']}\" --host={$connection['host']} --port={$connection['port']} {$connection['database']} ";
 
             // https://mariadb.com/kb/en/library/mysqldump/
             $options = [
@@ -276,6 +277,7 @@ class BackupManager
 
                 $connection = [
                     'host' => config('database.connections.mysql.host'),
+                    'port' => config('database.connections.mysql.port'),
                     'database' => config('database.connections.mysql.database'),
                     'username' => config('database.connections.mysql.username'),
                     'password' => config('database.connections.mysql.password'),
@@ -287,7 +289,7 @@ class BackupManager
                     $connectionOptions .= " -p\"{$connection['password']}\" ";
                 }
 
-                $connectionOptions .= " -h {$connection['host']} {$connection['database']} ";
+                $connectionOptions .= " -h {$connection['host']} --port={$connection['port']} {$connection['database']} ";
 
                 //$command = "$cd gunzip < $this->fBackupName | mysql $connectionOptions";
                 $command = 'cd ' . str_replace('\\', '/',
@@ -395,5 +397,13 @@ class BackupManager
         $power = $size > 0 ? floor(log($size, 1024)) : 0;
 
         return number_format($size / (1024 ** $power), 2, '.', ',') . ' ' . $units[$power];
+    }
+    /**
+     * Set backup name
+     */
+    public function setBackupName( $name )
+    {
+        $this->fBackupName = "f_$name.tar";
+        $this->dBackupName = "d_$name.gz";
     }
 }
