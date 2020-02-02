@@ -2,6 +2,7 @@
 
 namespace Sarfraznawaz2005\BackupManager\Http\Controllers;
 
+use Illuminate\Mail\Message;
 use Illuminate\Routing\Controller as BaseController;
 use Log;
 use Sarfraznawaz2005\BackupManager\Facades\BackupManager;
@@ -28,6 +29,8 @@ class BackupManagerController extends BaseController
 
     public function createBackup()
     {
+        $message = '';
+        $mailBody = '';
         $messages = [];
 
         // create backups
@@ -56,6 +59,8 @@ class BackupManagerController extends BaseController
             }
         }
 
+        $mailBody .= $message;
+
         if ($result['d'] === true) {
             $message = 'Database Backup Taken Successfully';
 
@@ -78,13 +83,18 @@ class BackupManagerController extends BaseController
             }
         }
 
-        Session::flash('messages', $messages);
+        $mailBody .= '<br>' . $message;
+
+        $this->sendMail($mailBody);
+
+        \Session::flash('messages', $messages);
 
         return redirect()->back();
     }
 
     public function restoreOrDeleteBackups()
     {
+        $mailBody = '';
         $messages = [];
         $backups = request()->backups;
         $type = request()->type;
@@ -126,6 +136,9 @@ class BackupManagerController extends BaseController
 
                         Log::error($message);
                     }
+
+                    $mailBody .= $message;
+
                 } elseif (isset($result['d'])) {
                     if ($result['d'] === true) {
                         $message = 'Database Backup Restored Successfully';
@@ -146,8 +159,12 @@ class BackupManagerController extends BaseController
 
                         Log::error($message);
                     }
+
+                    $mailBody .= '<br>' . $message;
                 }
             }
+
+            $this->sendMail($mailBody);
 
         } else {
             // delete backups
@@ -182,5 +199,26 @@ class BackupManagerController extends BaseController
                 ->getPathPrefix() . $path;
 
         return response()->download($file);
+    }
+
+    protected function sendMail($body)
+    {
+        try {
+
+            $emails = config('backupmanager.mail.mail_receivers', []);
+
+            if ($emails) {
+                foreach ($emails as $email) {
+                    \Mail::send([], [], static function (Message $message) use ($body, $email) {
+                        $message
+                            ->subject(config('backupmanager.mail.mail_subject', 'BackupManager Alert'))
+                            ->to($email)
+                            ->setBody($body, 'text/html');
+                    });
+                }
+            }
+        } catch (\Exception $e) {
+            \Log::error('BackupManager Email Sending Failed: ' . $e->getMessage());
+        }
     }
 }

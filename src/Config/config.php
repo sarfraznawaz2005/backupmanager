@@ -64,4 +64,16 @@ return [
         'delete_old_backup_days' => 10
     ],
 
+    /*
+     * Mail settings
+     */
+    'mail' => [
+        /*
+         * Define mail subject and who should receive mails when backup is taken/restored.
+         * Leave "mail_receivers" empty [] to not send any mail.
+         */
+        'mail_subject' => 'BackupManager Alert',
+        'mail_receivers' => ['admin@example.com'],
+    ],
+
 ];
