@@ -24,7 +24,7 @@ class BackupManager
     {
         $this->disk = config('backupmanager.backups.disk');
         $this->backupPath = config('backupmanager.backups.backup_path') . DIRECTORY_SEPARATOR;
-        $this->backupSuffix = strtolower(config('backupmanager.backups.backup_file_date_suffix'));
+        $this->backupSuffix = date(strtolower(config('backupmanager.backups.backup_file_date_suffix')));
         $this->fBackupName = "f_$this->backupSuffix.tar";
         $this->dBackupName = "d_$this->backupSuffix.gz";
 
