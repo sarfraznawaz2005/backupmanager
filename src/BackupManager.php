@@ -46,13 +46,25 @@ class BackupManager
         $filesData = [];
 
         foreach ($files as $index => $file) {
-            $filesData[] = [
-                'name' => $file['basename'],
-                'size_raw' => $file['size'],
-                'size' => $this->formatSizeUnits($file['size']),
-                'type' => $file['basename'][0] === 'd' ? 'Database' : 'Files',
-                'date' => date('M d Y', $this->getFileTimeStamp($file))
-            ];
+            if (!is_array($file)) {
+                $name = str_replace(config('backupmanager.backups.backup_path')."/","",$file->path());
+                $array = explode('_', $name);
+                $filesData[] = [
+                    'name' => end($array),
+                    'size_raw' => $file->fileSize(),
+                    'size' => $this->formatSizeUnits($file->fileSize()),
+                    'type' => $array[0] === 'd' ? 'Database' : 'Files',
+                    'date' => date('M d Y', $this->getFileTimeStamp($file))
+                ];
+            }else{
+                $filesData[] = [
+                    'name' => $file['basename'],
+                    'size_raw' => $file['size'],
+                    'size' => $this->formatSizeUnits($file['size']),
+                    'type' => $file['basename'][0] === 'd' ? 'Database' : 'Files',
+                    'date' => date('M d Y', $this->getFileTimeStamp($file))
+                ];
+            }
         }
 
         // sort by date
@@ -377,16 +389,19 @@ class BackupManager
         }
     }
 
-    protected function getFileTimeStamp(array $file)
+    protected function getFileTimeStamp($file)
     {
-        if (isset($file['timestamp'])) {
-            return $file['timestamp'];
+        if ($file instanceof \League\Flysystem\FileAttributes) {
+            return $file->lastModified();
+        }else{
+            if (isset($file['timestamp'])) {
+                return $file['timestamp'];
+            }
+            // otherwise get date from file name
+            $array = explode('_', $file['filename']);
+
+            return strtotime(end($array));
         }
-
-        // otherwise get date from file name
-        $array = explode('_', $file['filename']);
-
-        return strtotime(end($array));
     }
 
     protected function formatSizeUnits($size)

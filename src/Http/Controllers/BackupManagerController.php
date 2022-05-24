@@ -213,7 +213,7 @@ class BackupManagerController extends BaseController
                         $message
                             ->subject(config('backupmanager.mail.mail_subject', 'BackupManager Alert'))
                             ->to($email)
-                            ->setBody($body, 'text/html');
+                            ->text($body);
                     });
                 }
             }
