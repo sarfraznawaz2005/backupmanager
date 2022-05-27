@@ -47,7 +47,7 @@ class BackupManager
 
         foreach ($files as $index => $file) {
             if ($file instanceof \League\Flysystem\FileAttributes) {
-                $name = str_replace(config('backupmanager.backups.backup_path')."/","",$file->path());
+                $name = str_replace($this->backupPath,"",$file->path());
                 $array = explode('_', $name);
                 $filesData[] = [
                     'name' => $name,
@@ -387,7 +387,7 @@ class BackupManager
             if ($now - $this->getFileTimeStamp($file) >= 60 * 60 * 24 * $daysOldToDelete) {
                 if (Storage::disk($this->disk)->exists($filename)) {
                     Storage::disk($this->disk)->delete($filename);
-                    $name = str_replace(config('backupmanager.backups.backup_path')."/","",$filename);
+                    $name = str_replace($this->backupPath,"",$filename);
                     Log::info('Deleted old backup file: ' . $name);
                 }
             }
