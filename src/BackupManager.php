@@ -46,7 +46,7 @@ class BackupManager
         $filesData = [];
 
         foreach ($files as $index => $file) {
-            if (!is_array($file)) {
+            if ($file instanceof \League\Flysystem\FileAttributes) {
                 $name = str_replace(config('backupmanager.backups.backup_path')."/","",$file->path());
                 $array = explode('_', $name);
                 $filesData[] = [
@@ -378,12 +378,17 @@ class BackupManager
             if ($file['type'] !== 'file') {
                 continue;
             }
+            if (empty($file['basename'])) {
+                $filename = $file->path();
+            }else{
+                $filename = $this->backupPath . $file['basename'];
+            }
 
             if ($now - $this->getFileTimeStamp($file) >= 60 * 60 * 24 * $daysOldToDelete) {
-                if (Storage::disk($this->disk)->exists($this->backupPath . $file['basename'])) {
-                    Storage::disk($this->disk)->delete($this->backupPath . $file['basename']);
-
-                    Log::info('Deleted old backup file: ' . $file['basename']);
+                if (Storage::disk($this->disk)->exists($filename)) {
+                    Storage::disk($this->disk)->delete($filename);
+                    $name = str_replace(config('backupmanager.backups.backup_path')."/","",$filename);
+                    Log::info('Deleted old backup file: ' . $name);
                 }
             }
         }
