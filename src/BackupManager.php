@@ -50,7 +50,7 @@ class BackupManager
                 $name = str_replace(config('backupmanager.backups.backup_path')."/","",$file->path());
                 $array = explode('_', $name);
                 $filesData[] = [
-                    'name' => end($array),
+                    'name' => $name,
                     'size_raw' => $file->fileSize(),
                     'size' => $this->formatSizeUnits($file->fileSize()),
                     'type' => $array[0] === 'd' ? 'Database' : 'Files',
