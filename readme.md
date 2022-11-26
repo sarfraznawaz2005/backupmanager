@@ -69,6 +69,8 @@ Although packages provides GUI interface to manage backups, following commands a
 
 ```bash
   backupmanager:create                  Creates backup of files and/or database.
+  backupmanager:create --only="db"      Creates backup of database only.
+  backupmanager:create --only="files"   Creates backup of files only.
   backupmanager:list                    Shows list of backups taken.
   backupmanager:restore                 Restores a backup already taken.
 ```
