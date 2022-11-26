@@ -44,10 +44,9 @@ class BackupManager
         $files = Storage::disk($this->disk)->listContents($this->backupPath);
 
         $filesData = [];
-
         foreach ($files as $index => $file) {
             if ($file instanceof \League\Flysystem\FileAttributes) {
-                $name = str_replace($this->backupPath,"",$file->path());
+                $name = str_replace($this->backupPath,'',$file->path());
                 $array = explode('_', $name);
                 $filesData[] = [
                     'name' => $name,
@@ -88,7 +87,6 @@ class BackupManager
         $this->backupFiles();
         $this->backupDatabase();
         $this->deleteOldBackups();
-
         return $this->getBackupStatus();
     }
 
@@ -133,9 +131,9 @@ class BackupManager
     /**
      * Backup files
      */
-    protected function backupFiles()
+    public function backupFiles($bypass=false)
     {
-        if (config('backupmanager.backups.files.enable')) {
+        if (config('backupmanager.backups.files.enable') || $bypass===true) {
 
             // delete previous backup for same date
             if (Storage::disk($this->disk)->exists($this->backupPath . $this->fBackupName)) {
@@ -180,15 +178,18 @@ class BackupManager
                 // delete local file
                 $storageLocal->delete($this->fBackupName);
             }
+            if ($bypass===true) {
+                $this->deleteOldBackups();
+            }
         }
     }
 
     /**
      * Backup Database
      */
-    protected function backupDatabase()
+    public function backupDatabase($bypass=false)
     {
-        if (config('backupmanager.backups.database.enable')) {
+        if (config('backupmanager.backups.database.enable') || $bypass) {
 
             // delete previous backup for same date
             if (Storage::disk($this->disk)->exists($this->backupPath . $this->dBackupName)) {
@@ -244,6 +245,10 @@ class BackupManager
 
                 // delete local file
                 $storageLocal->delete($this->dBackupName);
+            }
+
+            if ($bypass===true) {
+                $this->deleteOldBackups();
             }
         }
     }
@@ -373,7 +378,6 @@ class BackupManager
         $now = time();
 
         $files = Storage::disk($this->disk)->listContents($this->backupPath);
-
         foreach ($files as $file) {
             if ($file['type'] !== 'file') {
                 continue;
