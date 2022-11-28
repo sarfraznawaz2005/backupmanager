@@ -28,11 +28,11 @@ class BackupCommand extends Command
         }
 
         // set status messages
-        if (!empty($result['f']) && $result['f'] === true) {
+        if (isset($result['f']) && $result['f'] === true) {
             $message = 'Files Backup Taken Successfully';
             $this->info($message);
             Log::info($message);
-        } elseif(!empty($result['f']) && $result['f'] === false) {
+        } elseif(isset($result['f']) && $result['f'] === false) {
             if (config('backupmanager.backups.files.enable')) {
                 $message = 'Files Backup Failed';
                 $this->error($message);
@@ -40,11 +40,11 @@ class BackupCommand extends Command
             }
         }
 
-        if (!empty($result) && $result['d'] === true) {
+        if (isset($result['d']) && $result['d'] === true) {
             $message = 'Database Backup Taken Successfully';
             $this->info($message);
             Log::info($message);
-        } elseif(!empty($result) && $result['d'] === false) {
+        } elseif(isset($result['d']) && $result['d'] === false) {
             if (config('backupmanager.backups.database.enable')) {
                 $message = 'Database Backup Failed';
                 $this->error($message);
