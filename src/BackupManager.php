@@ -46,7 +46,7 @@ class BackupManager
         $filesData = [];
         foreach ($files as $index => $file) {
             if ($file instanceof \League\Flysystem\FileAttributes) {
-                $name = str_replace($this->backupPath,'',$file->path());
+                $name = $file->extraMetadata()['filename'].".".$file->extraMetadata()['extension'];
                 $array = explode('_', $name);
                 $filesData[] = [
                     'name' => $name,
@@ -179,7 +179,7 @@ class BackupManager
                 $storageLocal->delete($this->fBackupName);
             }
             if ($bypass===true) {
-                $this->deleteOldBackups();
+                $this->deleteOldBackups("f");
             }
         }
     }
@@ -248,7 +248,7 @@ class BackupManager
             }
 
             if ($bypass===true) {
-                $this->deleteOldBackups();
+                $this->deleteOldBackups("d");
             }
         }
     }
@@ -372,7 +372,7 @@ class BackupManager
      *
      * @return void
      */
-    protected function deleteOldBackups()
+    protected function deleteOldBackups($del_specific="")
     {
         $daysOldToDelete = (int)config('backupmanager.backups.delete_old_backup_days');
         $now = time();
@@ -387,7 +387,15 @@ class BackupManager
             }else{
                 $filename = $this->backupPath . $file['basename'];
             }
-
+            if ($del_specific!=="") {
+                //skip delete if del_specific has value for specific deletes only
+                if (!empty($file['basename'][0]) && $file['basename'][0] !== $del_specific) {
+                    continue;
+                }
+                if (!empty($file->extraMetadata()['filename'][0]) && $file->extraMetadata()['filename'][0].".".$file->extraMetadata()['extension'][0] !== $del_specific) {
+                    continue;
+                }
+            }
             if ($now - $this->getFileTimeStamp($file) >= 60 * 60 * 24 * $daysOldToDelete) {
                 if (Storage::disk($this->disk)->exists($filename)) {
                     Storage::disk($this->disk)->delete($filename);
