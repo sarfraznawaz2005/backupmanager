@@ -12,7 +12,7 @@ Simple laravel package to backup/restore files and database.
 ## Requirements
 
  - PHP >= 5.6
- - Laravel 5
+ - >= Laravel 5
  - `mysql` (to restore database)
  - `mysqldump` (to backup database)
  - `tar` (to backup/restore files)
