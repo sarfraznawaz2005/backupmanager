@@ -45,8 +45,13 @@ class BackupManager
 
         $filesData = [];
         foreach ($files as $index => $file) {
-            if ($file instanceof \League\Flysystem\FileAttributes) {
-                $name = $file->extraMetadata()['filename'].".".$file->extraMetadata()['extension'];
+             if ($file instanceof \League\Flysystem\FileAttributes) {
+                if (!empty($file->path())) {
+                    $name = $file->path();
+                    $name = substr(str_replace(config('backupmanager.backups.backup_path'), '', $file->path()),1);
+                }else{
+                    $name = $file->extraMetadata()['filename'].".".$file->extraMetadata()['extension'];
+                }
                 $array = explode('_', $name);
                 $filesData[] = [
                     'name' => $name,
