@@ -19,14 +19,37 @@ class BackupCommand extends Command
         if ($argument!==null && !in_array($argument,['db','files']) ) {
             return $this->info('You can only select "files" or "db" argument!');
         }
-        if ($argument===null) {
-            $result = BackupManager::createBackup();
-        }elseif($argument==='files'){
-            $result = BackupManager::backupFiles(true);
-        }else{
-            $result = BackupManager::backupDatabase(true);
+        
+        try {
+            if ($argument===null) {
+                $result = BackupManager::createBackup();
+            }elseif($argument==='files'){
+                $result = BackupManager::backupFiles(true);
+            }else{
+                $result = BackupManager::backupDatabase(true);
+            }
+        } catch (\Exception $e) {
+            $this->error('Backup process failed with error:');
+            $this->error($e->getMessage());
+            $this->newLine();
+            $this->warn('Check the logs for more details: storage/logs/laravel.log');
+            Log::error('Backup command failed: ' . $e->getMessage(), [
+                'exception' => $e,
+                'trace' => $e->getTraceAsString()
+            ]);
+            return 1;
         }
 
+        // Display verification errors if present
+        if (isset($result['errors']) && is_array($result['errors'])) {
+            $this->newLine();
+            $this->error('Backup Verification Errors:');
+            foreach ($result['errors'] as $error) {
+                $this->error('  • ' . $error);
+            }
+            $this->newLine();
+        }
+        
         // set status messages
         if (isset($result['f']) && $result['f'] === true) {
             $message = 'Files Backup Taken Successfully';
@@ -36,6 +59,14 @@ class BackupCommand extends Command
             if (config('backupmanager.backups.files.enable')) {
                 $message = 'Files Backup Failed';
                 $this->error($message);
+                
+                // Display detailed error if available
+                if (isset($result['error'])) {
+                    $this->error('Error: ' . $result['error']);
+                    $this->newLine();
+                }
+                
+                $this->warn('Check the logs for detailed error information: storage/logs/laravel.log');
                 Log::error($message);
             }
         }
@@ -48,9 +79,19 @@ class BackupCommand extends Command
             if (config('backupmanager.backups.database.enable')) {
                 $message = 'Database Backup Failed';
                 $this->error($message);
+                
+                // Display detailed error if available
+                if (isset($result['error'])) {
+                    $this->error('Error: ' . $result['error']);
+                    $this->newLine();
+                }
+                
+                $this->warn('Check the logs for detailed error information: storage/logs/laravel.log');
                 Log::error($message);
             }
         }
+        
+        return 0;
     }
 
 }
